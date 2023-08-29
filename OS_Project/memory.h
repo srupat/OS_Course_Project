@@ -5,10 +5,12 @@
 class Memory
 {	
 		char* ptrToMemory;
-		char* ptrToData;
-		char* ptrToProgram;
+		int freeIndexArray[5];
 	public:
 		Memory();
-		char* getData(std::string inputBuffer);
+		char* getData(std::string , int );
 		char* getProgram();	
+		char* getPtrToMemory();
+		int getIndex();
+		void setIndex(int );
 };

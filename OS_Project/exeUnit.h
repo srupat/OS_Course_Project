@@ -1,5 +1,4 @@
-#ifndef EXE_UNIT_H
-#define EXE_UNIT_H
+#pragma once
 
 #include<iostream>
 class ExecutionUnit
@@ -13,4 +12,3 @@ public:
 	ExecutionUnit();
 };
 
-#endif

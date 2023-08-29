@@ -24,12 +24,18 @@
     <ClCompile Include="exeUnit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="job.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="exeUnit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="job.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

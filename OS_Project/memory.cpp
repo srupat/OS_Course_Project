@@ -1,29 +1,37 @@
 #include"memory.h"
+#include"job.h"
 #include<string>
 Memory::Memory() //constructor
 {
 	ptrToMemory = (char*)malloc(sizeof(char) * 400);
-	ptrToData = ptrToMemory + 40;
-	ptrToProgram = ptrToMemory;
+	for (int i = 0; i < 5; i++)
+	{
+		freeIndexArray[i] = 0;
+	}
 	// vector<vector<char>> Memory(100,vector<char>(4,0))
 }
-char* Memory::getData(std::string inputBuffer)
+
+
+char* Memory::getPtrToMemory()
 {
-	int t = inputBuffer.find("$DTA");
-	int Index = t + 5;
-	int i = 0;
-
-	while (inputBuffer[Index] != '$' && i != 39) {
-
-		char c = inputBuffer[Index];
-		ptrToData[i] = inputBuffer[Index];
-		Index++;
-		i++;
-	}
-	ptrToData[i] = '\0';
+	return ptrToMemory;
 }
 
-//char* Memory::getProgram()
-//{
-//
-//}
+void Memory::setIndex(int Index)
+{
+	freeIndexArray[Index] = 1;
+}
+
+int Memory::getIndex()
+{
+	int index = -1;
+	for (int i = 0; i < 5; i++)
+	{
+		if (freeIndexArray[i] == 0)
+		{
+			index =  i;
+			break;
+		}
+	}
+	return index;
+}
