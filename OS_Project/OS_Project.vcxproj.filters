@@ -24,19 +24,24 @@
     <ClCompile Include="exeUnit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="job.cpp">
+    <ClCompile Include="memController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="memory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="exeUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="job.h">
+    <ClInclude Include="memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="memController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="sample.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -1,56 +1,88 @@
 #include<iostream>
 #include<string>
+#include<cstring>
+#include<fstream>
 #include"exeUnit.h"
 #include"memory.h"
-#include"job.h"
+#include"memController.h"
+
+typedef struct {
+	char* pg0;
+	char* pg1;
+	char* pg2;
+	char* pg3;
+	int jobID;
+}SJOB;
+
 
 int main()
 {	
-	std::string inputBuffer = (char*)malloc(sizeof(char) * 40);
-	std::string outputBuffer = (char*)malloc(sizeof(char) * 40);
-	int caseVar{};
-	int jobId{};
-	int index{};
-	Memory mem;
-	ExecutionUnit exu;
-	char* startAddOfMem = mem.getPtrToMemory();
-	std::vector<Job> jobs{};
-	for (int i = 0; i < 5; i++)
+	Memory memory;
+	PageDirectory pageDirectory;
+	MemoryController memController;
+	int casevar{};
+	int pageTableIndex{ -1 };
+	int jobId;
+	std::string filepath;
+	std::string inputBuffer;
+	std::string outputBuffer;
+	std::ifstream file;
+	int* ptrToPageTable{ NULL };
+	char c{};
+	int fileCount{};
+	do
 	{
-		Job job;
-		job.setJobIndex(i);
-		jobs.push_back(job);
-	}
-	while (1)
-	{
-		std::cout << "Enter " << std::endl
-			<< "1 -> To Insert a Job " << std::endl
-			<< "2 -> To Execute a Job " << std::endl;
-		std::cin >> caseVar;
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		switch (caseVar)
+		std::cout << "Enter the code for the operation you have to perform :";
+		std::cin >> casevar;
+		switch (casevar)
 		{
 		case 1:
-			index = mem.getIndex();
-			if (index == -1)
+			// Insert a Job1
+
+			pageTableIndex = memController.getEmptyPageTable();
+			if (pageTableIndex == -1)
 			{
-				std::cout << "Memory is full :( " << std::endl;
+				std::cout << "The Memoey is full " << std::endl;
+			}
+			//std::getline(std::cin, "Sample.");
+			file.open("sample.txt");
+			if (file.fail() == true)
+			{
+				std::cout << "Error opening the file " << std::endl;
 				break;
-			}			
-			std::cout << "Pls Enter the input cards ";
-			std::getline(std::cin, inputBuffer);			
-			jobs.at(index).setJobId(inputBuffer);
-			jobs.at(index).setJobIndex(index);
-			mem.setIndex(index);
-			jobs.at(index).getData(inputBuffer, index, startAddOfMem);
-			break; 
+			}
+			while (file.get(c))
+			{
+				inputBuffer += c;
+				fileCount++;
+			}
+			inputBuffer += '\0';
+			file.close();
+			ptrToPageTable = pageDirectory.getPtrToPageDirectory(pageTableIndex);
+			jobId = memController.getJobId(inputBuffer);
+			memController.setJobId(jobId, pageTableIndex);
+			memController.generateFrames(pageDirectory, pageTableIndex);
+			memController.pushInstructions(jobId, pageDirectory, memory, inputBuffer);
+			memController.pushData(jobId, pageDirectory, memory, inputBuffer);
+
+			std::cout << std::endl;		
+			memController.printFrame(ptrToPageTable[0], memory);
+			std::cout << std::endl;
+			memController.printFrame(ptrToPageTable[1], memory);
+			std::cout << std::endl;
+			memController.printFrame(ptrToPageTable[2], memory);
+			std::cout << std::endl;
+			memController.printFrame(ptrToPageTable[3], memory);
+			std::cout << std::endl;
+			break;
 		case 2:
-			// Execute a JOB
-			std::cout << "Enter the Job Id : ";
-			std::cin >> jobId;
+			// Execute a Job
 			break;
 		case 3:
-			std::cout << "Enter valied command !" << std::endl;
+			// Delete a Job
+		default:
+			std::cout << "Invalid Input ";
+			break;
 		}
-	}
+	} while (casevar != -1);
 }

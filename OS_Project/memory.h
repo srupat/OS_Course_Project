@@ -1,16 +1,20 @@
 #pragma once
-#include<iostream>
-#include<vector>
 
 class Memory
 {	
 		char* ptrToMemory;
-		int freeIndexArray[5];
+		friend class MemoryController;
 	public:
 		Memory();
-		char* getData(std::string , int );
-		char* getProgram();	
-		char* getPtrToMemory();
-		int getIndex();
-		void setIndex(int );
 };
+
+
+class PageDirectory
+{
+	int* ptrToPageDirectory;
+	friend class MemoryController;
+public:
+	PageDirectory();
+	int* getPtrToPageDirectory(int pageTableIndex);
+};
+

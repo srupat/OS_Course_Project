@@ -1,37 +1,23 @@
 #include"memory.h"
-#include"job.h"
+#include"memController.h"
 #include<string>
 Memory::Memory() //constructor
 {
-	ptrToMemory = (char*)malloc(sizeof(char) * 400);
-	for (int i = 0; i < 5; i++)
-	{
-		freeIndexArray[i] = 0;
+
+	ptrToMemory = (char*)malloc(sizeof(char) * 800);
+	
+}
+
+PageDirectory::PageDirectory()
+{
+	ptrToPageDirectory = new int[20];
+	for (int i = 0; i < 20; i++) {
+		ptrToPageDirectory[i] = -1;
 	}
-	// vector<vector<char>> Memory(100,vector<char>(4,0))
 }
 
-
-char* Memory::getPtrToMemory()
+int* PageDirectory::getPtrToPageDirectory(int pageTableIndex)
 {
-	return ptrToMemory;
-}
-
-void Memory::setIndex(int Index)
-{
-	freeIndexArray[Index] = 1;
-}
-
-int Memory::getIndex()
-{
-	int index = -1;
-	for (int i = 0; i < 5; i++)
-	{
-		if (freeIndexArray[i] == 0)
-		{
-			index =  i;
-			break;
-		}
-	}
-	return index;
+	int* ptrToPageTable = ptrToPageDirectory + pageTableIndex * 4;
+	return ptrToPageTable;
 }

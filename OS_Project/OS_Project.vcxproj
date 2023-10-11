@@ -128,14 +128,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="exeUnit.cpp" />
-    <ClCompile Include="job.cpp" />
+    <ClCompile Include="memController.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="memory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="exeUnit.h" />
-    <ClInclude Include="job.h" />
+    <ClInclude Include="memController.h" />
     <ClInclude Include="memory.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="sample.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
