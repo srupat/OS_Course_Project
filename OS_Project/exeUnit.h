@@ -12,7 +12,7 @@ typedef struct {
 
 class ExecutionUnit
 {
-	char* GPR;
+	std::string GPR;
 	char* IR;
 	int PC;
 	int lineCount;

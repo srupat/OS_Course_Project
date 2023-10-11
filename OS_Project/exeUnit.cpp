@@ -81,6 +81,7 @@ void ExecutionUnit::loadInReg()
 {
 	int labelNo = IR[3] - 48; // ir is in char
 	int labelStartIndex = 40;
+	int dataCount{ 4 };
 	labelStartIndex = 40 - (labelNo+1) * 4;
 	char* temp = job.pg1;
 	temp = temp + labelStartIndex;
@@ -96,6 +97,7 @@ void ExecutionUnit::loadInReg()
 		buffer += temp[i];
 	}
 	int length = std::stoi(buffer);
+	GPR.clear();
 	for (int i = 0; i < 39; i++) // 39 coz last char is some special character
 	{
 		int dataIndex = tillData + i;
@@ -104,20 +106,32 @@ void ExecutionUnit::loadInReg()
 			// page 2 
 			while (length > 0)
 			{
-				char c = job.pg2[dataIndex];
-				GPR[4 - length] = job.pg2[dataIndex];
-				length--;
-				dataIndex++;
+				if (dataCount > 0)
+				{
+					char c = job.pg2[dataIndex];
+					GPR += job.pg2[dataIndex];
+					length--;
+					dataIndex++;
+					dataCount--;
+				}
+				else
+					return;
 			}
 		}
 		else if (dataIndex > 41)
 		{
-			while (length >= 0)
+			while (length > 0)
 			{
 				// page 3
-				GPR[4 - length] = job.pg3[dataIndex];
-				length--;
-				dataIndex++;
+				if (dataCount >= 0)
+				{
+					char c = job.pg3[dataIndex];
+					GPR += job.pg2[dataIndex];
+					length--;
+					dataIndex++;
+				}
+				else
+					return;
 			}
 		}
 	}
