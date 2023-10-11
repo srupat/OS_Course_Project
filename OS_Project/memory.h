@@ -6,6 +6,7 @@ class Memory
 		friend class MemoryController;
 	public:
 		Memory();
+		char* getPtrToMem();
 };
 
 

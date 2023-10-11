@@ -6,20 +6,12 @@
 #include"memory.h"
 #include"memController.h"
 
-typedef struct {
-	char* pg0;
-	char* pg1;
-	char* pg2;
-	char* pg3;
-	int jobID;
-}SJOB;
-
-
 int main()
 {	
 	Memory memory;
 	PageDirectory pageDirectory;
 	MemoryController memController;
+	
 	int casevar{};
 	int pageTableIndex{ -1 };
 	int jobId;
@@ -76,13 +68,54 @@ int main()
 			std::cout << std::endl;
 			break;
 		case 2:
-			// Execute a Job
-			break;
-		case 3:
-			// Delete a Job
-		default:
-			std::cout << "Invalid Input ";
+			std::cout << "Enter the job id";
+			std::cin >> jobId;
+			std::cout << "--------------------OUTPUT---------------------------" << std::endl;
+			pageTableIndex = memController.getPageTableIndex(jobId);
+			ptrToPageTable = pageDirectory.getPtrToPageDirectory(pageTableIndex);
+			ExecutionUnit exec(ptrToPageTable[0], ptrToPageTable[1], ptrToPageTable[2], ptrToPageTable[3],jobId, memory);
+			char* IR = exec.getIR();
+			int PC = exec.getPC();
+			while (1)
+			{
+				exec.loadIR(exec);
+				PC++;
+				if (IR[0] == 'P' && IR[1] == 'D')
+				{
+					
+					exec.putData(outputBuffer);
+					std::cout << outputBuffer;
+					outputBuffer.clear();
+					std::cout << std::endl;
+				}
+				else if (IR[0] == 'L' && IR[1] == 'R')
+				{
+					exec.loadInReg();
+				}
+				else if (IR[0] == 'S' && IR[1] == 'R')
+				{
+					exec.storeFromReg();
+				}
+				else if (IR[0] == 'C' && IR[1] == 'R')
+				{
+					exec.compareWithReg();
+				}
+				else if (IR[0] == 'B' && IR[1] == 'T')
+				{
+					exec.branch(exec);
+				}
+				else if (IR[0] == 'H')
+				{
+					break;
+				}
+				else {
+					std::cout << "Opcode error";
+					break;
+				}
+			}			
 			break;
 		}
+		std::cout << "--------------------------------------------------------" << std::endl;
 	} while (casevar != -1);
+	
 }

@@ -16,4 +16,5 @@ public:
 	void pushInstructions(int jobId, PageDirectory& pageDir, Memory& memory, std::string inputBuffer );
 	void printFrame(int frame, Memory& memory);
 	void pushData(int jobId, PageDirectory& pageDir, Memory& memory, std::string inputBuffer);
+	int getPageTableIndex(int jobId);
 };

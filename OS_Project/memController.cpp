@@ -226,3 +226,15 @@ void MemoryController::pushData(int jobId, PageDirectory& pageDir, Memory& memor
 	}
 	
 }
+
+int MemoryController::getPageTableIndex(int jobId)
+{
+	for (int i = 0; i < 5; i++)
+	{
+		if (pageTableToJobMap[i] == jobId)
+		{
+			return i;
+		}
+	}
+	return -1;
+}

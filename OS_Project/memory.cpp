@@ -8,6 +8,11 @@ Memory::Memory() //constructor
 	
 }
 
+char* Memory::getPtrToMem()
+{
+	return ptrToMemory;
+}
+
 PageDirectory::PageDirectory()
 {
 	ptrToPageDirectory = new int[20];
