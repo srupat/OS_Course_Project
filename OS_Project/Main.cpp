@@ -34,7 +34,7 @@ int main()
 			pageTableIndex = memController.getEmptyPageTable();
 			if (pageTableIndex == -1)
 			{
-				std::cout << "The Memoey is full " << std::endl;
+				std::cout << "The Memory is full " << std::endl;
 			}
 			//std::getline(std::cin, "Sample.");
 			file.open("sample.txt");
@@ -50,7 +50,7 @@ int main()
 			}
 			inputBuffer += '\0';
 			file.close();
-			ptrToPageTable = pageDirectory.getPtrToPageDirectory(pageTableIndex);
+			ptrToPageTable = pageDirectory.getPtrToPageDirectory(pageTableIndex);  // returns pointerToPageTable
 			jobId = memController.getJobId(inputBuffer);
 			memController.setJobId(jobId, pageTableIndex);
 			memController.generateFrames(pageDirectory, pageTableIndex);
@@ -68,7 +68,7 @@ int main()
 			std::cout << std::endl;
 			break;
 		case 2:
-			std::cout << "Enter the job id";
+			std::cout << "Enter the job id :";
 			std::cin >> jobId;
 			std::cout << "--------------------OUTPUT---------------------------" << std::endl;
 			pageTableIndex = memController.getPageTableIndex(jobId);
