@@ -213,16 +213,22 @@ void MemoryController::pushData(int jobId, PageDirectory& pageDir, Memory& memor
 	ptrToThirdPage = memory.ptrToMemory + ptrToPageTable[2] * 40;
 	ptrToFourthPage = memory.ptrToMemory + ptrToPageTable[3] * 40;
 	dataIndex = inputBuffer.find("$DTA") + 5;
-	while (inputBuffer[dataIndex + dataCount] != '*')
+	while (inputBuffer[dataIndex + dataCount] != '*' )
 	{
-		char c = inputBuffer[dataIndex + dataCount];
-		if(dataCount <= 40)
-			ptrToThirdPage[dataCount] = inputBuffer[dataIndex + dataCount];
-		
+		if (inputBuffer[dataIndex + dataCount] != '\n')
+		{
+			char c = inputBuffer[dataIndex + dataCount];
+			if (dataCount <= 40)
+				ptrToThirdPage[dataCount] = inputBuffer[dataIndex + dataCount];
+
+			else
+				ptrToFourthPage[dataCount] = inputBuffer[dataIndex + dataCount];
+			dataCount++;
+		}
 		else
-			ptrToFourthPage[dataCount] = inputBuffer[dataIndex + dataCount];
-			
-		dataCount++;
+		{
+			dataIndex++;
+		}
 	}
 	
 }
