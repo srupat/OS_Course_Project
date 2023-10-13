@@ -35,8 +35,7 @@ public:
 	void storeFromReg();
 	int compareWithReg();
 	void branch(ExecutionUnit& exec);
-	int getTimeLimit(std::string inputBuffer);
-	int getLineLimit(std::string inputBuffer);
+	
 	int outOfData(std::string inputBuffer);
 	int operandError();
 };

@@ -15,10 +15,13 @@ int main()
 	int casevar{};
 	int pageTableIndex{ -1 };
 	int jobId;
+	char a;
 	std::string filepath;
 	std::string inputBuffer;
 	std::string outputBuffer;
 	std::ifstream file;
+	int timeLimit;
+	int lineLimit;
 	int* ptrToPageTable{ NULL };
 	char c{};
 	int fileCount{};
@@ -30,14 +33,19 @@ int main()
 		{
 		case 1:
 			// Insert a Job1
-
+			
 			pageTableIndex = memController.getEmptyPageTable();
 			if (pageTableIndex == -1)
 			{
 				std::cout << "The Memory is full " << std::endl;
 			}
-			//std::getline(std::cin, "Sample.");
-			file.open("sample.txt");
+			std::cout << "Enter the file name :";
+			while (filepath == "")
+			{
+				filepath.clear();
+				std::getline(std::cin, filepath);
+			}
+			file.open(filepath);
 			if (file.fail() == true)
 			{
 				std::cout << "Error opening the file " << std::endl;
@@ -45,6 +53,7 @@ int main()
 			}
 			while (file.get(c))
 			{
+
 				inputBuffer += c;
 				fileCount++;
 			}
@@ -53,19 +62,22 @@ int main()
 			ptrToPageTable = pageDirectory.getPtrToPageDirectory(pageTableIndex);  // returns pointerToPageTable
 			jobId = memController.getJobId(inputBuffer);
 			memController.setJobId(jobId, pageTableIndex);
+			timeLimit = memController.getTimeLimit(inputBuffer);
+			lineLimit = memController.getLineLimit(inputBuffer);
 			memController.generateFrames(pageDirectory, pageTableIndex);
 			memController.pushInstructions(jobId, pageDirectory, memory, inputBuffer);
-			memController.pushData(jobId, pageDirectory, memory, inputBuffer);
-
-			std::cout << std::endl;		
+			std::cout << std::endl;
 			memController.printFrame(ptrToPageTable[0], memory);
 			std::cout << std::endl;
 			memController.printFrame(ptrToPageTable[1], memory);
+			memController.pushData(jobId, pageDirectory, memory, inputBuffer);			
 			std::cout << std::endl;
 			memController.printFrame(ptrToPageTable[2], memory);
 			std::cout << std::endl;
 			memController.printFrame(ptrToPageTable[3], memory);
 			std::cout << std::endl;
+			filepath.clear();
+			inputBuffer.clear();
 			break;
 		case 2:
 			std::cout << "Enter the job id :";
@@ -76,8 +88,6 @@ int main()
 			ExecutionUnit exec(ptrToPageTable[0], ptrToPageTable[1], ptrToPageTable[2], ptrToPageTable[3],jobId, memory);
 			char* IR = exec.getIR();
 			int PC = exec.getPC();
-			int timeLimit = exec.getTimeLimit(inputBuffer);
-			int lineLimit = exec.getLineLimit(inputBuffer);
 			int time = 0;
 			int line = 0;
 
@@ -125,17 +135,17 @@ int main()
 					std::cout << "Opcode error";
 					break;
 				}
-				if (exec.outOfData(inputBuffer))
+				/*if (exec.outOfData(inputBuffer))
 				{
 					std::cout << "Out of data error";
 					break;
-				}
-				if (exec.operandError())
-				{
-					std::cout << "Operand error";
-					//break;
-				}
-				if (time > timeLimit) {
+				}*/
+				//if (exec.operandError())
+				//{
+				//	std::cout << "Operand error";
+				//	//break;
+				//}
+				/*if (time > timeLimit) {
 					std::cout << "Time limit exceeded";
 					break;
 				}
@@ -143,7 +153,7 @@ int main()
 				{
 					std::cout << "Line limit exceeded";
 					break;
-				}
+				}*/
 				
 			}			
 			break;

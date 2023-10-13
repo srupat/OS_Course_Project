@@ -246,3 +246,35 @@ int MemoryController::getPageTableIndex(int jobId)
 	}
 	return -1;
 }
+
+int MemoryController::getLineLimit(std::string inputBuffer)
+{
+	
+	int start = inputBuffer.find("$AMJ");
+	char buffer[5];
+	int lineLimit{};
+	for (int i = start + 12; i < start + 16; i++)
+	{
+		int bufferIndex = i - start - 12;
+		buffer[bufferIndex] = inputBuffer[i];
+	}
+	buffer[4] = 0;
+	lineLimit = std::stoi(buffer);
+	return lineLimit;
+}
+
+int MemoryController::getTimeLimit(std::string inputBuffer)
+{
+	
+	int start = inputBuffer.find("$AMJ");
+	char buffer[5];
+	int timeLimit{};
+	for (int i = start + 8; i < start + 12; i++)
+	{
+		int bufferIndex = i - start - 8;
+		buffer[bufferIndex] = inputBuffer[i];
+	}
+	buffer[4] = 0;
+	timeLimit = std::stoi(buffer);
+	return timeLimit;
+}

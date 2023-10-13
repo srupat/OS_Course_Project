@@ -280,37 +280,7 @@ void ExecutionUnit::branch(ExecutionUnit& exec)
 
 }
 
-int ExecutionUnit::getLineLimit(std::string inputBuffer)
-{
-	std::string temp = std::to_string(job.jobID);
-	int start = inputBuffer.find("$AMJ000" + temp);
-	char buffer[5];
-	int lineLimit{};
-	for (int i = start + 12; i < start + 16; i++)
-	{
-		int bufferIndex = i - start - 12;
-		buffer[bufferIndex] = inputBuffer[i];
-	}
-	buffer[4] = 0;
-	lineLimit = std::stoi(buffer);
-	return lineLimit;
-}
 
-int ExecutionUnit::getTimeLimit(std::string inputBuffer)
-{
-	std::string temp = std::to_string(job.jobID);
-	int start = inputBuffer.find("$AMJ000" + temp);
-	char buffer[5];
-	int timeLimit{};
-	for (int i = start + 8; i < start + 12; i++)
-	{
-		int bufferIndex = i - start - 8;
-		buffer[bufferIndex] = inputBuffer[i];
-	}
-	buffer[4] = 0;
-	timeLimit = std::stoi(buffer);
-	return timeLimit;
-}
 
 int ExecutionUnit::outOfData(std::string inputBuffer)
 {
@@ -326,7 +296,14 @@ int ExecutionUnit::outOfData(std::string inputBuffer)
 int ExecutionUnit::operandError()
 {
 	int flag = 0;
-	if (IR[2] != 'L') flag = 1;
+	int var = IR[2] - 48;
+	if (IR[2] != 'L')
+	{
+		if (var < 49 || var>57)
+		{
+			flag = 1;
+		}
+	}
 	int num = IR[3] - 48;
 	if (num < 49 || num>57) flag = 1;
 	return flag;

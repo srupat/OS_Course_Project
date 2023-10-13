@@ -2,10 +2,15 @@
 #include<iostream>
 #include<vector>
 #include"memory.h"
-
+typedef struct lineTimeLimitContainer
+{
+	int lineLimit;
+	int timeLimit;
+}LTSTRUCT;
 class MemoryController
 {
 	int* pageTableToJobMap;
+	
 	int* occupiedMemFrames;
 public:
 	MemoryController();
@@ -16,5 +21,7 @@ public:
 	void pushInstructions(int jobId, PageDirectory& pageDir, Memory& memory, std::string inputBuffer );
 	void printFrame(int frame, Memory& memory);
 	void pushData(int jobId, PageDirectory& pageDir, Memory& memory, std::string inputBuffer);
+	int getTimeLimit(std::string inputBuffer);
+	int getLineLimit(std::string inputBuffer);
 	int getPageTableIndex(int jobId);
 };
