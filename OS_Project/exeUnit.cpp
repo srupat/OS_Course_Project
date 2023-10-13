@@ -140,42 +140,44 @@ void ExecutionUnit::loadInReg()
 void ExecutionUnit::storeFromReg()
 {
 	int labelNo = IR[3] - 48; // ir is in char
-	int progIndex = 37;
-	int label;
-	while (progIndex > 1)
+	int labelStartIndex = 40;
+	int dataCount{ 4 };
+	int count{};
+	labelStartIndex = 40 - (labelNo + 1) * 4;
+	char* temp = job.pg1;
+	temp = temp + labelStartIndex;
+	std::string buffer;
+	for (int i = 0; i < 2; i++)
 	{
-		if (job.pg1[progIndex] == labelNo)
-		{
-			break;
-		}
-		progIndex -= 4;
+		buffer += temp[i];
 	}
-	if (progIndex == 1) // to fix the error where the first label from the top is the label we want
+	int tillData = std::stoi(buffer);
+	buffer.clear();
+	for (int i = 2; i < 4; i++)
 	{
-		progIndex = 37;
-		while (progIndex > 1)
-		{
-			if (job.pg0[progIndex] == labelNo)
-			{
-				break;
-			}
-			progIndex -= 4;
-		}
+		buffer += temp[i];
 	}
-
-	int tillData = progIndex - 47;
-	int length = 4;
+	int length = std::stoi(buffer);
+	//GPR.clear();
 	for (int i = 0; i < 39; i++) // 39 coz last char is some special character
 	{
-		int dataIndex = tillData + i + 1;
+		int dataIndex = tillData + i;
 		if (dataIndex < 39)
 		{
 			// page 2 
 			while (length > 0)
 			{
-				job.pg2[dataIndex] = GPR[i];
-				length--;
-				dataIndex++;
+				if (dataCount > 0)
+				{
+					char c = GPR[count];
+					job.pg2[dataIndex] = c;
+					length--;
+					dataIndex++;
+					dataCount--;
+					count++;
+				}
+				else
+					return;
 			}
 		}
 		else if (dataIndex > 41)
@@ -183,13 +185,20 @@ void ExecutionUnit::storeFromReg()
 			while (length > 0)
 			{
 				// page 3
-				job.pg3[dataIndex] = GPR[i];
-				length--;
-				dataIndex++;
+				if (dataCount >= 0)
+				{
+					char c = GPR[count];
+					job.pg2[dataIndex] = c;
+					length--;
+					dataIndex++;
+				}
+				else
+					return;
 			}
 		}
 	}
 }
+
 
 int ExecutionUnit::compareWithReg()
 {
@@ -269,4 +278,56 @@ void ExecutionUnit::branch(ExecutionUnit& exec)
 		exec.temp = job.pg0 + instructionNo * 4;
 	}
 
+}
+
+int ExecutionUnit::getLineLimit(std::string inputBuffer)
+{
+	std::string temp = std::to_string(job.jobID);
+	int start = inputBuffer.find("$AMJ000" + temp);
+	char buffer[5];
+	int lineLimit{};
+	for (int i = start + 12; i < start + 16; i++)
+	{
+		int bufferIndex = i - start - 12;
+		buffer[bufferIndex] = inputBuffer[i];
+	}
+	buffer[4] = 0;
+	lineLimit = std::stoi(buffer);
+	return lineLimit;
+}
+
+int ExecutionUnit::getTimeLimit(std::string inputBuffer)
+{
+	std::string temp = std::to_string(job.jobID);
+	int start = inputBuffer.find("$AMJ000" + temp);
+	char buffer[5];
+	int timeLimit{};
+	for (int i = start + 8; i < start + 12; i++)
+	{
+		int bufferIndex = i - start - 8;
+		buffer[bufferIndex] = inputBuffer[i];
+	}
+	buffer[4] = 0;
+	timeLimit = std::stoi(buffer);
+	return timeLimit;
+}
+
+int ExecutionUnit::outOfData(std::string inputBuffer)
+{
+	std::string temp = std::to_string(job.jobID);
+	int start = inputBuffer.find("$AMJ000" + temp);
+	std::string dtaMarker = "$DTA";
+
+	int dataPos = inputBuffer.find(dtaMarker, start + temp.length());
+	if (inputBuffer[dataPos + 4] == '$') return 1;
+	else return 0;
+}
+
+int ExecutionUnit::operandError()
+{
+	int flag = 0;
+	if (IR[2] != 'L') flag = 1;
+	int num = IR[3] - 48;
+	if (num < 49 || num>57) flag = 1;
+	return flag;
 }

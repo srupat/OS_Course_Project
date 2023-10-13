@@ -34,7 +34,7 @@ int main()
 			pageTableIndex = memController.getEmptyPageTable();
 			if (pageTableIndex == -1)
 			{
-				std::cout << "The Memoey is full " << std::endl;
+				std::cout << "The Memory is full " << std::endl;
 			}
 			//std::getline(std::cin, "Sample.");
 			file.open("sample.txt");
@@ -76,13 +76,20 @@ int main()
 			ExecutionUnit exec(ptrToPageTable[0], ptrToPageTable[1], ptrToPageTable[2], ptrToPageTable[3],jobId, memory);
 			char* IR = exec.getIR();
 			int PC = exec.getPC();
+			int timeLimit = exec.getTimeLimit(inputBuffer);
+			int lineLimit = exec.getLineLimit(inputBuffer);
+			int time = 0;
+			int line = 0;
+
 			while (1)
 			{
 				exec.loadIR(exec);
 				PC++;
+				
 				if (IR[0] == 'P' && IR[1] == 'D')
 				{
-					
+					time++;
+					line++;
 					exec.putData(outputBuffer);
 					std::cout << outputBuffer;
 					outputBuffer.clear();
@@ -90,28 +97,54 @@ int main()
 				}
 				else if (IR[0] == 'L' && IR[1] == 'R')
 				{
+					time++;
 					exec.loadInReg();
 				}
 				else if (IR[0] == 'S' && IR[1] == 'R')
 				{
+					time+=2;
 					exec.storeFromReg();
 				}
 				else if (IR[0] == 'C' && IR[1] == 'R')
 				{
+					time++;
 					exec.compareWithReg();
 				}
 				else if (IR[0] == 'B' && IR[1] == 'T')
 				{
+					time++;
 					exec.branch(exec);
 				}
 				else if (IR[0] == 'H')
 				{
+					time++;
 					break;
 				}
+				// errors
 				else {
 					std::cout << "Opcode error";
 					break;
 				}
+				if (exec.outOfData(inputBuffer))
+				{
+					std::cout << "Out of data error";
+					break;
+				}
+				if (exec.operandError())
+				{
+					std::cout << "Operand error";
+					//break;
+				}
+				if (time > timeLimit) {
+					std::cout << "Time limit exceeded";
+					break;
+				}
+				if (line > lineLimit)
+				{
+					std::cout << "Line limit exceeded";
+					break;
+				}
+				
 			}			
 			break;
 		}
