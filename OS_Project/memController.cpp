@@ -45,6 +45,8 @@ int MemoryController::getJobId(std::string inputBuffer)
 	return jobId;
 }
 
+
+
 void MemoryController::setJobId(int jobId, int pageTableIndex)
 {
 	pageTableToJobMap[pageTableIndex] = jobId;
