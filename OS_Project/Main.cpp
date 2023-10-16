@@ -7,11 +7,11 @@
 #include"memController.h"
 
 int main()
-{	
+{
 	Memory memory;
 	PageDirectory pageDirectory;
 	MemoryController memController;
-	
+
 	int casevar{};
 	int pageTableIndex{ -1 };
 	int jobId;
@@ -33,7 +33,7 @@ int main()
 		{
 		case 1:
 			// Insert a Job1
-			
+
 			pageTableIndex = memController.getEmptyPageTable();
 			if (pageTableIndex == -1)
 			{
@@ -70,12 +70,21 @@ int main()
 			memController.printFrame(ptrToPageTable[0], memory);
 			std::cout << std::endl;
 			memController.printFrame(ptrToPageTable[1], memory);
-			memController.pushData(jobId, pageDirectory, memory, inputBuffer);			
-			std::cout << std::endl;
+			if (memController.outOfData(inputBuffer))
+			{
+				std::cout << "Out of data error";
+				break;
+			}
+			else
+			{
+				memController.pushData(jobId, pageDirectory, memory, inputBuffer);
+				std::cout << std::endl;
+			}
 			memController.printFrame(ptrToPageTable[2], memory);
 			std::cout << std::endl;
 			memController.printFrame(ptrToPageTable[3], memory);
 			std::cout << std::endl;
+
 			filepath.clear();
 			inputBuffer.clear();
 			break;
@@ -85,7 +94,7 @@ int main()
 			std::cout << "--------------------OUTPUT---------------------------" << std::endl;
 			pageTableIndex = memController.getPageTableIndex(jobId);
 			ptrToPageTable = pageDirectory.getPtrToPageDirectory(pageTableIndex);
-			ExecutionUnit exec(ptrToPageTable[0], ptrToPageTable[1], ptrToPageTable[2], ptrToPageTable[3],jobId, memory);
+			ExecutionUnit exec(ptrToPageTable[0], ptrToPageTable[1], ptrToPageTable[2], ptrToPageTable[3], jobId, memory);
 			char* IR = exec.getIR();
 			int PC = exec.getPC();
 			int time = 0;
@@ -95,12 +104,13 @@ int main()
 			{
 				exec.loadIR(exec);
 				PC++;
-				
+
 				if (IR[0] == 'P' && IR[1] == 'D')
 				{
+
 					time++;
 					line++;
-					exec.putData(outputBuffer);
+					if (exec.putData(outputBuffer)) break;
 					std::cout << outputBuffer;
 					outputBuffer.clear();
 					std::cout << std::endl;
@@ -108,17 +118,17 @@ int main()
 				else if (IR[0] == 'L' && IR[1] == 'R')
 				{
 					time++;
-					exec.loadInReg();
+					if (exec.loadInReg()) break;
 				}
 				else if (IR[0] == 'S' && IR[1] == 'R')
 				{
-					time+=2;
-					exec.storeFromReg();
+					time += 2;
+					if (exec.storeFromReg()) break;
 				}
 				else if (IR[0] == 'C' && IR[1] == 'R')
 				{
 					time++;
-					exec.compareWithReg();
+					if (exec.compareWithReg() == 2) break;
 				}
 				else if (IR[0] == 'B' && IR[1] == 'T')
 				{
@@ -135,17 +145,8 @@ int main()
 					std::cout << "Opcode error";
 					break;
 				}
-				/*if (exec.outOfData(inputBuffer))
-				{
-					std::cout << "Out of data error";
-					break;
-				}*/
-				//if (exec.operandError())
-				//{
-				//	std::cout << "Operand error";
-				//	//break;
-				//}
-				/*if (time > timeLimit) {
+
+				if (time > timeLimit) {
 					std::cout << "Time limit exceeded";
 					break;
 				}
@@ -153,9 +154,9 @@ int main()
 				{
 					std::cout << "Line limit exceeded";
 					break;
-				}*/
-				
-			}			
+				}
+
+			}
 			break;
 		}
 		std::cout << "--------------------------------------------------------" << std::endl;
