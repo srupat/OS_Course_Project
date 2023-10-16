@@ -31,9 +31,13 @@ void ExecutionUnit::loadIR(ExecutionUnit& exec)
 	exec.temp = exec.temp + 4;
 }
 
-void ExecutionUnit::putData(std::string& outputBuffer)
+int ExecutionUnit::putData(std::string& outputBuffer)
 {
 	int labelNo = IR[3] - 48; // ir is in char
+	if (operandError(labelNo)) {
+		std::cout << "operand error";
+		return 1;
+	}
 	int labelStartIndex = 40;
 	labelStartIndex = 40 - (labelNo + 1) * 4;
 	char* temp = job.pg1;
@@ -74,12 +78,17 @@ void ExecutionUnit::putData(std::string& outputBuffer)
 				dataIndex++;
 			}
 		}
+		return 0;
 		// to handle the else part where the data lies in between the 2 pages
 }
 
-void ExecutionUnit::loadInReg()
+int ExecutionUnit::loadInReg()
 {
 	int labelNo = IR[3] - 48; // ir is in char
+	if (operandError(labelNo)) {
+		std::cout << "operand error";
+		return 1;
+	}
 	int labelStartIndex = 40;
 	int dataCount{ 4 };
 	labelStartIndex = 40 - (labelNo+1) * 4;
@@ -115,7 +124,7 @@ void ExecutionUnit::loadInReg()
 					dataCount--;
 				}
 				else
-					return;
+					return 0;
 			}
 		}
 		else if (dataIndex > 41)
@@ -131,15 +140,19 @@ void ExecutionUnit::loadInReg()
 					dataIndex++;
 				}
 				else
-					return;
+					return 0;
 			}
 		}
 	}
 }
 
-void ExecutionUnit::storeFromReg()
+int ExecutionUnit::storeFromReg()
 {
 	int labelNo = IR[3] - 48; // ir is in char
+	if (operandError(labelNo)) {
+		std::cout << "operand error";
+		return 1;
+	}
 	int labelStartIndex = 40;
 	int dataCount{ 4 };
 	int count{};
@@ -177,7 +190,7 @@ void ExecutionUnit::storeFromReg()
 					count++;
 				}
 				else
-					return;
+					return 0;
 			}
 		}
 		else if (dataIndex > 41)
@@ -193,7 +206,7 @@ void ExecutionUnit::storeFromReg()
 					dataIndex++;
 				}
 				else
-					return;
+					return 0;
 			}
 		}
 	}
@@ -203,6 +216,10 @@ void ExecutionUnit::storeFromReg()
 int ExecutionUnit::compareWithReg()
 {
 	int labelNo = IR[3] - 48; // ir is in char
+	if (operandError(labelNo)) {
+		std::cout << "operand error";
+		return 2;
+	}
 	int labelStartIndex = 40;
 	labelStartIndex = 40 - (labelNo + 1) * 4;
 	char* temp = job.pg1;
@@ -284,7 +301,7 @@ void ExecutionUnit::branch(ExecutionUnit& exec)
 
 
 
-int ExecutionUnit::operandError()
+int ExecutionUnit::operandError(int labelNo)
 {
 	int flag = 0;
 	int var = IR[2] - 48;
@@ -293,11 +310,15 @@ int ExecutionUnit::operandError()
 	int dataLimit = 40;
 	for (int i = 39; i > 0; i--)
 	{
-		if (job.pg1[i] = '=') break;
+		if (! std::isdigit(job.pg1[i])) break;
 		dataLimit--;
 	}
 
-	dataLimit = dataLimit / 4;
+	dataLimit = 10 - (dataLimit / 4);
+	if (dataLimit < labelNo)
+	{
+		return 1;
+	}
 	if (IR[2] != 'L')
 	{
 		if (var < 49 || var>57)

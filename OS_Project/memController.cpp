@@ -282,6 +282,6 @@ int MemoryController::outOfData(std::string inputBuffer)
 {
 	int dataPos = inputBuffer.find("$DTA");
 	
-	if (inputBuffer[dataPos + 4] == '$') return 1;
+	if (inputBuffer[dataPos + 4] == '*') return 1;
 	else return 0;
 }

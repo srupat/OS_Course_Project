@@ -30,13 +30,12 @@ public:
 	}
 	ExecutionUnit(int ptrToPage1, int ptrToPage2, int ptrToPage3, int ptrToPage4, int jobId, Memory& memory);
 	void loadIR(ExecutionUnit& exec);
-	void putData(std::string& outputBuffer);
-	void loadInReg();
-	void storeFromReg();
+	int putData(std::string& outputBuffer);
+	int loadInReg();
+	int storeFromReg();
 	int compareWithReg();
 	void branch(ExecutionUnit& exec);
 	
-	
-	int operandError();
+	int operandError(int labelNo);
 };
 
