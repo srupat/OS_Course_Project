@@ -100,7 +100,7 @@ void MemoryController::pushInstructions(int jobId, PageDirectory& pageDir, Memor
 	while (inputBuffer[programIndex] != '*')
 	{	
 		programIndex++;
-		if (inputBuffer[programIndex] == 'L' && inputBuffer[programIndex + 1] != 'R')
+		if (inputBuffer[programIndex] == 'L' && std::isdigit(inputBuffer[programIndex + 1]))
 		{
 			// label
 			std::string l_buffer;
@@ -112,13 +112,13 @@ void MemoryController::pushInstructions(int jobId, PageDirectory& pageDir, Memor
 				
 			}
 			l_buffer.erase(0, 2);
-			for (size_t i = 0; i < l_buffer.length(); ++i) {
+			for (int i = 0; i < l_buffer.length(); ++i) {
 				if (l_buffer[i] == ',') {
 					l_buffer.erase(i, 1); // Erase 1 character at position i
 					--i; // Decrement i to account for the removed character
 				}
 			}
-			for (int i = 1; i < 5; i++)
+			for (int i = 0; i < l_buffer.size(); i++)
 			{
 				ptrToSecondPage[39 - label*4 + i] = l_buffer.at(i);
 			}
