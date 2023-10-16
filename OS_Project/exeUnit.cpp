@@ -282,21 +282,22 @@ void ExecutionUnit::branch(ExecutionUnit& exec)
 
 
 
-int ExecutionUnit::outOfData(std::string inputBuffer)
-{
-	std::string temp = std::to_string(job.jobID);
-	int start = inputBuffer.find("$AMJ000" + temp);
-	std::string dtaMarker = "$DTA";
 
-	int dataPos = inputBuffer.find(dtaMarker, start + temp.length());
-	if (inputBuffer[dataPos + 4] == '$') return 1;
-	else return 0;
-}
 
 int ExecutionUnit::operandError()
 {
 	int flag = 0;
 	int var = IR[2] - 48;
+
+
+	int dataLimit = 40;
+	for (int i = 39; i > 0; i--)
+	{
+		if (job.pg1[i] = '=') break;
+		dataLimit--;
+	}
+
+	dataLimit = dataLimit / 4;
 	if (IR[2] != 'L')
 	{
 		if (var < 49 || var>57)
@@ -305,6 +306,6 @@ int ExecutionUnit::operandError()
 		}
 	}
 	int num = IR[3] - 48;
-	if (num < 49 || num>57) flag = 1;
+	if (num < 0 || num>dataLimit) flag = 1; // if we want valid numeric value, just add num>9
 	return flag;
 }

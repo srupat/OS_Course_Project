@@ -36,7 +36,7 @@ public:
 	int compareWithReg();
 	void branch(ExecutionUnit& exec);
 	
-	int outOfData(std::string inputBuffer);
+	
 	int operandError();
 };
 

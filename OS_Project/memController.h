@@ -23,5 +23,6 @@ public:
 	void pushData(int jobId, PageDirectory& pageDir, Memory& memory, std::string inputBuffer);
 	int getTimeLimit(std::string inputBuffer);
 	int getLineLimit(std::string inputBuffer);
+	int outOfData(std::string inputBuffer);
 	int getPageTableIndex(int jobId);
 };

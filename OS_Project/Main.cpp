@@ -78,6 +78,10 @@ int main()
 			std::cout << std::endl;
 			filepath.clear();
 			inputBuffer.clear();
+			if (memController.outOfData(inputBuffer))
+			{
+				std::cout << "Out of data error";
+			}
 			break;
 		case 2:
 			std::cout << "Enter the job id :";
@@ -135,17 +139,13 @@ int main()
 					std::cout << "Opcode error";
 					break;
 				}
-				/*if (exec.outOfData(inputBuffer))
+				
+				/*if (exec.operandError())
 				{
-					std::cout << "Out of data error";
+					std::cout << "Operand error";
 					break;
 				}*/
-				//if (exec.operandError())
-				//{
-				//	std::cout << "Operand error";
-				//	//break;
-				//}
-				/*if (time > timeLimit) {
+				if (time > timeLimit) {
 					std::cout << "Time limit exceeded";
 					break;
 				}
@@ -153,7 +153,7 @@ int main()
 				{
 					std::cout << "Line limit exceeded";
 					break;
-				}*/
+				}
 				
 			}			
 			break;
