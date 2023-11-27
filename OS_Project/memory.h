@@ -9,7 +9,6 @@ class Memory
 		char* getPtrToMem();
 };
 
-
 class PageDirectory
 {
 	int* ptrToPageDirectory;

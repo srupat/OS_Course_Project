@@ -2,8 +2,9 @@
 #include<iostream>
 #include<vector>
 #include"memory.h"
-typedef struct lineTimeLimitContainer
+typedef struct line_TimeLimitContainer
 {
+	int jobId;
 	int lineLimit;
 	int timeLimit;
 }LTSTRUCT;
