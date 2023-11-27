@@ -86,7 +86,7 @@ int ExecutionUnit::loadInReg()
 {
 	int labelNo = IR[3] - 48; // ir is in char
 	if (operandError(labelNo)) {
-		std::cout << "operand error";
+		std::cout << "operand error : label " << labelNo << " not found " << std::endl;
 		return 1;
 	}
 	int labelStartIndex = 40;
@@ -107,43 +107,42 @@ int ExecutionUnit::loadInReg()
 	}
 	int length = std::stoi(buffer);
 	GPR.clear();
-	for (int i = 0; i < 39; i++) // 39 coz last char is some special character
+
+	int dataIndex = tillData;
+	if (dataIndex < 39)
 	{
-		int dataIndex = tillData + i;
-		if (dataIndex < 39)
+		// page 2 
+		while (length > 0)
 		{
-			// page 2 
-			while (length > 0)
+			if (dataCount > 0)
 			{
-				if (dataCount > 0)
-				{
-					char c = job.pg2[dataIndex];
-					GPR += job.pg2[dataIndex];
-					length--;
-					dataIndex++;
-					dataCount--;
-				}
-				else
-					return 0;
+				char c = job.pg2[dataIndex];
+				GPR += job.pg2[dataIndex];
+				length--;
+				dataIndex++;
+				dataCount--;
 			}
-		}
-		else if (dataIndex > 41)
-		{
-			while (length > 0)
-			{
-				// page 3
-				if (dataCount >= 0)
-				{
-					char c = job.pg3[dataIndex];
-					GPR += job.pg2[dataIndex];
-					length--;
-					dataIndex++;
-				}
-				else
-					return 0;
-			}
+			else
+				return 0;
 		}
 	}
+	else if (dataIndex > 41)
+	{
+		while (length > 0)
+		{
+			// page 3
+			if (dataCount > 0)
+			{
+				char c = job.pg3[dataIndex];
+				GPR += job.pg2[dataIndex];
+				length--;
+				dataIndex++;
+			}
+			else
+				return 0;
+		}
+	}
+	return 0;
 }
 
 int ExecutionUnit::storeFromReg()
@@ -172,44 +171,43 @@ int ExecutionUnit::storeFromReg()
 	}
 	int length = std::stoi(buffer);
 	//GPR.clear();
-	for (int i = 0; i < 39; i++) // 39 coz last char is some special character
+
+	int dataIndex = tillData;
+	if (dataIndex < 39)
 	{
-		int dataIndex = tillData + i;
-		if (dataIndex < 39)
+		// page 2 
+		while (length > 0)
 		{
-			// page 2 
-			while (length > 0)
+			if (dataCount > 0)
 			{
-				if (dataCount > 0)
-				{
-					char c = GPR[count];
-					job.pg2[dataIndex] = c;
-					length--;
-					dataIndex++;
-					dataCount--;
-					count++;
-				}
-				else
-					return 0;
+				char c = GPR[count];
+				job.pg2[dataIndex] = c;
+				length--;
+				dataIndex++;
+				dataCount--;
+				count++;
 			}
-		}
-		else if (dataIndex > 41)
-		{
-			while (length > 0)
-			{
-				// page 3
-				if (dataCount >= 0)
-				{
-					char c = GPR[count];
-					job.pg2[dataIndex] = c;
-					length--;
-					dataIndex++;
-				}
-				else
-					return 0;
-			}
+			else
+				return 0;
 		}
 	}
+	else if (dataIndex > 41)
+	{
+		while (length > 0)
+		{
+			// page 3
+			if (dataCount >= 0)
+			{
+				char c = GPR[count];
+				job.pg2[dataIndex] = c;
+				length--;
+				dataIndex++;
+			}
+			else
+				return 0;
+		}
+	}
+	
 }
 
 
@@ -304,7 +302,7 @@ void ExecutionUnit::branch(ExecutionUnit& exec)
 int ExecutionUnit::operandError(int labelNo)
 {
 	int flag = 0;
-	int var = IR[2] - 48;
+	int var = IR[3] - 48;
 
 
 	int dataLimit = 40;

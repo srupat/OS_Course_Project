@@ -71,8 +71,11 @@ void MemoryController::generateFrames(PageDirectory& pageDir, int pageTableIndex
 		{
 			randomInt = random_integer_0_to_19();
 		} while (occupiedMemFrames[randomInt] != 0);
+		occupiedMemFrames[randomInt] = 1;
+		std::cout << "random number generated is : " << randomInt << " ";
 		ptrToPageTable[pageIndex] = randomInt;
 		pageIndex++;
+		std::cout << std::endl;
 	}
 }
 
