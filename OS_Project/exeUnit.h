@@ -34,8 +34,7 @@ public:
 	int loadInReg();
 	int storeFromReg();
 	int compareWithReg();
-	void branch(ExecutionUnit& exec);
-	
+	void branch(ExecutionUnit& exec);	
 	int operandError(int labelNo);
 };
 

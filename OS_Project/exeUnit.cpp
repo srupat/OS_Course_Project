@@ -282,8 +282,6 @@ void ExecutionUnit::branch(ExecutionUnit& exec)
 	// ir is in char
 	if (exec.controlFlag == 1)
 	{
-
-
 		std::string buffer;
 		for (int i = 2; i < 4; i++)
 		{
@@ -292,7 +290,6 @@ void ExecutionUnit::branch(ExecutionUnit& exec)
 		int instructionNo = std::stoi(buffer);
 		exec.temp = job.pg0 + instructionNo * 4;
 	}
-
 }
 
 
